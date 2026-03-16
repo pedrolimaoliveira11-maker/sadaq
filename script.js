@@ -1,51 +1,33 @@
-const form = document.getElementById('form-cadastro');
-const corpoTabela = document.getElementById('corpo-tabela');
+// Seleciona o botão de exportar
+const btnExportar = document.getElementById('btn-exportar');
 
-// Carrega os dados assim que abrir a página
-document.addEventListener('DOMContentLoaded', exibirClientes);
+btnExportar.addEventListener('click', exportarParaCSV);
 
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const novoCliente = {
-        id: Date.now(),
-        nome: document.getElementById('nome').value,
-        email: document.getElementById('email').value,
-        telefone: document.getElementById('telefone').value
-    };
-
-    salvarNoStorage(novoCliente);
-    form.reset();
-    exibirClientes();
-});
-
-function salvarNoStorage(cliente) {
+function exportarParaCSV() {
     const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
-    clientes.push(cliente);
-    localStorage.setItem('clientes', JSON.stringify(clientes));
-}
+    
+    if (clientes.length === 0) {
+        alert("Não há dados para exportar!");
+        return;
+    }
 
-function exibirClientes() {
-    const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
-    corpoTabela.innerHTML = '';
+    // Define o cabeçalho do arquivo
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Nome;E-mail;Telefone\n"; // Cabeçalhos
 
-    clientes.forEach(cliente => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${cliente.nome}</td>
-            <td>${cliente.email}</td>
-            <td>${cliente.telefone}</td>
-            <td>
-                <button class="btn-excluir" onclick="removerCliente(${cliente.id})">Excluir</button>
-            </td>
-        `;
-        corpoTabela.appendChild(tr);
+    // Adiciona os dados de cada cliente
+    clientes.forEach(c => {
+        let linha = `${c.nome};${c.email};${c.telefone}`;
+        csvContent += linha + "\n";
     });
-}
 
-function removerCliente(id) {
-    let clientes = JSON.parse(localStorage.getItem('clientes')) || [];
-    clientes = clientes.filter(c => c.id !== id);
-    localStorage.setItem('clientes', JSON.stringify(clientes));
-    exibirClientes();
+    // Cria um link invisível para disparar o download
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "lista_clientes.csv");
+    document.body.appendChild(link);
+
+    link.click(); // Simula o clique
+    document.body.removeChild(link); // Remove o link após o download
 }
