@@ -1,103 +1,21 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
-}
-
-body {
-    background-color: #f0f2f5;
-    padding: 20px;
+.acoes-tabela {
     display: flex;
-    justify-content: center;
-}
-
-.main-wrapper {
-    width: 100%;
-    max-width: 900px;
-}
-
-.container, .lista-container {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
-}
-
-h2, h3 {
-    color: #1a73e8;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
 }
 
-.input-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-}
-
-.input-row {
-    display: flex;
-    gap: 15px;
-}
-
-label {
-    font-size: 0.9rem;
+.btn-secundario {
+    background-color: #34a853; /* Verde do Excel */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
     font-weight: 600;
-    margin-bottom: 5px;
+    font-size: 0.85rem;
 }
 
-input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 1rem;
+.btn-secundario:hover {
+    background-color: #2d8e47;
 }
-
-input:focus {
-    border-color: #1a73e8;
-    outline: none;
-}
-
-.btn-enviar {
-    width: 100%;
-    padding: 12px;
-    background-color: #1a73e8;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.btn-enviar:hover { background-color: #1557b0; }
-
-/* Estilos da Tabela */
-.table-responsive { overflow-x: auto; }
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-    font-size: 0.95rem;
-}
-
-th { background-color: #f8f9fa; }
-
-.btn-excluir {
-    background-color: #d93025;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-excluir:hover { background-color: #a51d16; }
