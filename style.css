@@ -1,34 +1,30 @@
-// Seleciona o botão de exportar
-const btnExportar = document.getElementById('btn-exportar');
+/* ... (mantenha o CSS anterior e adicione/ajuste estes) ... */
 
-btnExportar.addEventListener('click', exportarParaCSV);
-
-function exportarParaCSV() {
-    const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
-    
-    if (clientes.length === 0) {
-        alert("Não há dados para exportar!");
-        return;
-    }
-
-    // Define o cabeçalho do arquivo
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "Nome;E-mail;Telefone\n"; // Cabeçalhos
-
-    // Adiciona os dados de cada cliente
-    clientes.forEach(c => {
-        let linha = `${c.nome};${c.email};${c.telefone}`;
-        csvContent += linha + "\n";
-    });
-
-    // Cria um link invisível para disparar o download
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "lista_clientes.csv");
-    document.body.appendChild(link);
-
-    link.click(); // Simula o clique
-    document.body.removeChild(link); // Remove o link após o download
+.acoes-tabela {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
-                       
+
+#busca {
+    margin-bottom: 15px;
+    border: 2px solid #e0e0e0;
+    padding: 12px;
+}
+
+#busca:focus {
+    border-color: #1a73e8;
+}
+
+.btn-secundario {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-secundario:hover { background-color: #27ae60; }
