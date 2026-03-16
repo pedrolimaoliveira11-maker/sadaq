@@ -1,14 +1,85 @@
-/* ... (mantenha o CSS anterior) ... */
+/* Configurações Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-.btn-editar {
-    background-color: #f1c40f;
-    color: #333;
+body {
+    background-color: #f0f2f5;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.main-wrapper {
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Containers Brancos */
+.container, .lista-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+h2, h3 {
+    color: #1a73e8;
+    margin-bottom: 15px;
+}
+
+/* Formulário e Inputs */
+.input-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-row {
+    display: flex;
+    gap: 15px;
+}
+
+label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: #1a73e8;
+    outline: none;
+}
+
+/* Botões Principais */
+.btn-enviar {
+    width: 100%;
+    padding: 12px;
+    background-color: #1a73e8;
+    color: white;
     border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    margin-right: 5px;
     font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-enviar:hover {
+    background-color: #1557b0;
 }
 
 .btn-cancelar {
@@ -22,6 +93,96 @@
     cursor: pointer;
 }
 
+/* Cabeçalho da Tabela e Busca */
+.acoes-tabela {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#busca {
+    margin-bottom: 15px;
+    border: 2px solid #eef0f2;
+    background-color: #f8f9fa;
+}
+
+.btn-secundario {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-secundario:hover {
+    background-color: #27ae60;
+}
+
+/* Estilização da Tabela */
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+}
+
+th {
+    background-color: #f8f9fa;
+    color: #666;
+}
+
+/* Botões de Ação na Tabela */
 .acoes-flex {
     display: flex;
+    gap: 8px;
+}
+
+.btn-editar {
+    background-color: #f1c40f;
+    color: #333;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-excluir {
+    background-color: #d93025;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-excluir:hover {
+    background-color: #a51d16;
+}
+
+/* Responsividade para Telas Pequenas */
+@media (max-width: 600px) {
+    .input-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .acoes-tabela {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
 }
