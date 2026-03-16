@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="main-wrapper">
         <div class="container">
             <form id="form-cadastro">
-                <h2>Novo Cliente</h2>
+                <h2 id="titulo-form">Novo Cliente</h2>
+                <input type="hidden" id="cliente-id">
+                
                 <div class="input-group">
                     <label>Nome Completo</label>
                     <input type="text" id="nome" placeholder="Ex: João Silva" required>
@@ -25,12 +26,9 @@
                         <label>Telefone</label>
                         <input type="tel" id="telefone" placeholder="(00) 00000-0000">
                     </div>
-                    <div class="input-group">
-                        <label>Nascimento</label>
-                        <input type="date" id="nascimento">
-                    </div>
                 </div>
-                <button type="submit" class="btn-enviar">Salvar Cliente</button>
+                <button type="submit" id="btn-salvar" class="btn-enviar">Salvar Cliente</button>
+                <button type="button" id="btn-cancelar" class="btn-cancelar" style="display: none;" onclick="resetarEstado()">Cancelar Edição</button>
             </form>
         </div>
 
@@ -39,11 +37,7 @@
                 <h3>Clientes</h3>
                 <button id="btn-exportar" class="btn-secundario">Exportar Excel</button>
             </div>
-            
-            <div class="input-group">
-                <input type="text" id="busca" placeholder="🔍 Buscar cliente pelo nome..." onkeyup="filtrarClientes()">
-            </div>
-
+            <input type="text" id="busca" placeholder="🔍 Buscar cliente..." onkeyup="filtrarClientes()">
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -59,7 +53,6 @@
             </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
