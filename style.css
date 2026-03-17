@@ -1,188 +1,60 @@
-/* Configurações Globais */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Definição de cores (Crie isso no topo do arquivo) */
+:root {
+    --bg-body: #f0f2f5;
+    --bg-container: #ffffff;
+    --texto-principal: #333333;
+    --texto-secundario: #666666;
+    --borda: #dddddd;
+    --primaria: #1a73e8;
 }
 
+/* Cores do Modo Escuro */
+.dark-mode {
+    --bg-body: #121212;
+    --bg-container: #1e1e1e;
+    --texto-principal: #ffffff;
+    --texto-secundario: #b0b0b0;
+    --borda: #333333;
+    --primaria: #8ab4f8;
+}
+
+/* Aplique as variáveis nos estilos existentes */
 body {
-    background-color: #f0f2f5;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
+    background-color: var(--bg-body);
+    color: var(--texto-principal);
+    transition: background 0.3s, color 0.3s; /* Suaviza a transição */
 }
 
-.main-wrapper {
-    width: 100%;
-    max-width: 900px;
-}
-
-/* Containers Brancos */
 .container, .lista-container {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
+    background: var(--bg-container);
+    border: 1px solid var(--borda);
 }
 
-h2, h3 {
-    color: #1a73e8;
-    margin-bottom: 15px;
-}
-
-/* Formulário e Inputs */
-.input-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-}
-
-.input-row {
-    display: flex;
-    gap: 15px;
-}
-
-label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: #444;
-}
+h2, h3 { color: var(--primaria); }
 
 input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
-}
-
-input:focus {
-    border-color: #1a73e8;
-    outline: none;
-}
-
-/* Botões Principais */
-.btn-enviar {
-    width: 100%;
-    padding: 12px;
-    background-color: #1a73e8;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s;
-}
-
-.btn-enviar:hover {
-    background-color: #1557b0;
-}
-
-.btn-cancelar {
-    width: 100%;
-    padding: 10px;
-    background-color: #95a5a6;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    margin-top: 10px;
-    cursor: pointer;
-}
-
-/* Cabeçalho da Tabela e Busca */
-.acoes-tabela {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-#busca {
-    margin-bottom: 15px;
-    border: 2px solid #eef0f2;
-    background-color: #f8f9fa;
-}
-
-.btn-secundario {
-    background-color: #2ecc71;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.btn-secundario:hover {
-    background-color: #27ae60;
-}
-
-/* Estilização da Tabela */
-.table-responsive {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-    font-size: 0.95rem;
+    background-color: var(--bg-container);
+    color: var(--texto-principal);
+    border: 1px solid var(--borda);
 }
 
 th {
-    background-color: #f8f9fa;
-    color: #666;
+    background-color: var(--borda);
+    color: var(--texto-principal);
 }
 
-/* Botões de Ação na Tabela */
-.acoes-flex {
-    display: flex;
-    gap: 8px;
+/* Estilo do botão de tema */
+.theme-switch {
+    text-align: right;
+    margin-bottom: 10px;
 }
 
-.btn-editar {
-    background-color: #f1c40f;
-    color: #333;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
+#btn-tema {
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--primaria);
+    background: transparent;
+    color: var(--primaria);
     cursor: pointer;
     font-weight: bold;
-}
-
-.btn-excluir {
-    background-color: #d93025;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-excluir:hover {
-    background-color: #a51d16;
-}
-
-/* Responsividade para Telas Pequenas */
-@media (max-width: 600px) {
-    .input-row {
-        flex-direction: column;
-        gap: 0;
-    }
-    
-    .acoes-tabela {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
 }
