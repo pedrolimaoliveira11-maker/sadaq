@@ -3,10 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Clientes Pro</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Sistema Tricolor Pro - SPFC</title>
+    <style>
+        /* --- CONFIGURAÇÕES GERAIS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0a0a0a; /* Fundo bem escuro */
+            color: white;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .main-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* --- ANIMAÇÃO PISCA-PISCA TRICOLOR --- */
+        @keyframes piscaTricolor {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h2, h3 {
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ff0000, #ffffff, #555, #ff0000);
+            background-size: 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: piscaTricolor 3s linear infinite;
+        }
+
+        /* --- CONTAINERS (CLIENTE E VENDA) --- */
+        .container, .lista-container {
+            background: #151515;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            flex: 1;
+            min-width: 320px;
+        }
+
+        .input-group { margin-bottom: 15px; }
+        .input-row { display: flex; gap: 10px; }
+        .input-row .input-group { flex: 1; }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #222;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #ff0000;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        /* --- BOTÕES --- */
+        .btn-enviar {
+            width: 100%;
+            padding: 15px;
+            background: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-enviar:hover {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 20px #ff0000;
+        }
+
+        .btn-venda {
+            background: #000;
+            border: 2px solid #ff0000;
+            margin-top: 10px;
+        }
+
+        .btn-secundario {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* --- TABELA --- */
+        .table-responsive {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #000;
+            color: #ff0000;
+            padding: 12px;
+            position: sticky;
+            top: 0;
+            border-bottom: 2px solid #fff;
+        }
+
+        td { padding: 12px; border-bottom: 1px solid #333; text-align: center; }
+
+        /* --- ESCUDO FLUTUANTE --- */
+        .escudo-flutuante {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 70px;
+            filter: drop-shadow(0 0 10px rgba(255,0,0,0.8));
+            animation: flutuar 3s ease-in-out infinite;
+        }
+
+        @keyframes flutuar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        #busca {
+            margin-bottom: 15px;
+            border-color: #ff0000;
+        }
+    </style>
 </head>
 <body>
+
     <div class="main-wrapper">
         <div class="container">
             <form id="form-cadastro">
@@ -15,29 +174,49 @@
                 
                 <div class="input-group">
                     <label>Nome Completo</label>
-                    <input type="text" id="nome" placeholder="Ex: João Silva" required>
+                    <input type="text" id="nome" placeholder="Ex: Rogério Ceni" required>
                 </div>
                 <div class="input-group">
                     <label>E-mail</label>
-                    <input type="email" id="email" placeholder="joao@email.com" required>
+                    <input type="email" id="email" placeholder="soberano@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="telefone" placeholder="(11) 99999-0000">
+                </div>
+                <button type="submit" id="btn-salvar" class="btn-enviar">Salvar Cliente</button>
+            </form>
+        </div>
+
+        <div class="container">
+            <form id="form-venda">
+                <h2>Registrar Venda</h2>
+                <div class="input-group">
+                    <label>Cliente</label>
+                    <select id="venda-cliente" required>
+                        <option value="">Selecione o Cliente...</option>
+                    </select>
                 </div>
                 <div class="input-row">
                     <div class="input-group">
-                        <label>Telefone</label>
-                        <input type="tel" id="telefone" placeholder="(00) 00000-0000">
+                        <label>Produto</label>
+                        <input type="text" placeholder="Ex: Camisa Jogo 1" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Valor</label>
+                        <input type="number" placeholder="R$" required>
                     </div>
                 </div>
-                <button type="submit" id="btn-salvar" class="btn-enviar">Salvar Cliente</button>
-                <button type="button" id="btn-cancelar" class="btn-cancelar" style="display: none;" onclick="resetarEstado()">Cancelar Edição</button>
+                <button type="submit" class="btn-enviar btn-venda">Finalizar Venda</button>
             </form>
         </div>
 
         <div class="lista-container">
-            <div class="acoes-tabela">
+            <div class="acoes-tabela" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h3>Clientes</h3>
                 <button id="btn-exportar" class="btn-secundario">Exportar Excel</button>
             </div>
-            <input type="text" id="busca" placeholder="🔍 Buscar cliente..." onkeyup="filtrarClientes()">
+            <input type="text" id="busca" placeholder="🔍 Buscar cliente...">
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -48,11 +227,25 @@
                             <th>Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="corpo-tabela"></tbody>
+                    <tbody id="corpo-tabela">
+                        </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <img class="escudo-flutuante" src="https://upload.wikimedia.org/wikipedia/pt/4/4b/Sao_Paulo_Futebol_Clube.png" alt="Escudo SPFC">
+
+    <script>
+        // Aqui você deve manter ou colar as funções do seu arquivo script.js
+        console.log("Sistema Tricolor Carregado!");
+        
+        // Exemplo simples de como resetar o estado (que estava no seu HTML original)
+        function resetarEstado() {
+            document.getElementById('form-cadastro').reset();
+            document.getElementById('btn-cancelar').style.display = 'none';
+            document.getElementById('titulo-form').innerText = 'Novo Cliente';
+        }
+    </script>
 </body>
 </html>
