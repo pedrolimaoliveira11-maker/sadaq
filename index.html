@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Soberano - SPFC</title>
+    <title>Sistema Soberano Pro - SPFC</title>
     <style>
-        /* --- ESTILOS VISUAIS (SÃO PAULO FC) --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        /* --- ESTILO TRICOLOR (SÃO PAULO FC) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
         
         body {
-            background-color: #0d0d0d;
+            background-color: #0a0a0a;
             color: white;
             padding: 20px;
+            display: flex;
+            justify-content: center;
         }
 
         .main-wrapper {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            justify-content: center;
             max-width: 1200px;
-            margin: 0 auto;
+            width: 100%;
         }
 
         /* Efeito Pisca-Pisca nos Títulos */
@@ -31,180 +32,219 @@
             background-size: 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: pisca 4s linear infinite;
+            animation: piscaTricolor 4s linear infinite;
             margin-bottom: 20px;
+            font-weight: 900;
         }
 
-        @keyframes pisca {
+        @keyframes piscaTricolor {
             0% { background-position: 0% 50%; }
             100% { background-position: 100% 50%; }
         }
 
-        .container, .lista-container {
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 12px;
+        .card {
+            background: #151515;
+            padding: 25px;
+            border-radius: 15px;
             border: 1px solid #333;
             flex: 1;
-            min-width: 350px;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.1);
+            min-width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #aaa; font-size: 0.8rem; }
+        label { display: block; margin-bottom: 5px; color: #bbb; font-size: 0.85rem; }
         
         input, select {
             width: 100%;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 8px;
             border: 1px solid #444;
-            background: #252525;
+            background: #222;
             color: white;
             outline: none;
-        }
-
-        input:focus { border-color: #ff0000; }
-
-        .btn-enviar {
-            width: 100%;
-            padding: 12px;
-            background: #ff0000;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
             transition: 0.3s;
         }
 
-        .btn-enviar:hover { background: #fff; color: #000; box-shadow: 0 0 15px #ff0000; }
+        input:focus { border-color: #ff0000; box-shadow: 0 0 8px rgba(255,0,0,0.4); }
 
-        .btn-venda { background: #000; border: 1px solid #ff0000; margin-top: 10px; }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
 
-        /* Tabela */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #000; color: #ff0000; padding: 10px; border-bottom: 2px solid #fff; }
-        td { padding: 10px; border-bottom: 1px solid #333; text-align: center; }
+        .btn-salvar { background: #ff0000; color: white; }
+        .btn-salvar:hover { background: #fff; color: #000; box-shadow: 0 0 20px #ff0000; }
+
+        .btn-venda { background: #000; border: 2px solid #ff0000; color: white; margin-top: 10px; }
+        .btn-venda:hover { background: #333; border-color: #fff; }
+
+        /* Tabela Estilizada */
+        .table-container { width: 100%; margin-top: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background: #111; }
+        th { background: #000; color: #ff0000; padding: 12px; border-bottom: 2px solid #fff; }
+        td { padding: 12px; border-bottom: 1px solid #333; text-align: center; }
+
+        .btn-excluir {
+            background: transparent;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-excluir:hover { background: #ff4444; color: white; }
 
         /* Escudo Flutuante */
         .escudo {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 60px;
-            animation: flutuar 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px red);
+            width: 70px;
+            animation: bounce 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(255,0,0,0.6));
         }
 
-        @keyframes flutuar {
+        @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-15px); }
         }
     </style>
 </head>
 <body>
 
 <div class="main-wrapper">
-    <div class="container">
+    <div class="card">
         <form id="form-cliente">
             <h2>Novo Cliente</h2>
             <div class="input-group">
-                <label>Nome Completo</label>
-                <input type="text" id="nome" required>
+                <label>Nome do Cliente</label>
+                <input type="text" id="nome" placeholder="Ex: Rogério Ceni" required>
             </div>
             <div class="input-group">
-                <label>E-mail</label>
-                <input type="email" id="email" required>
+                <label>Email</label>
+                <input type="email" id="email" placeholder="ceni@spfc.com" required>
             </div>
-            <button type="submit" class="btn-enviar">Cadastrar Cliente</button>
+            <button type="submit" class="btn btn-salvar">Cadastrar no Elenco</button>
         </form>
     </div>
 
-    <div class="container">
+    <div class="card">
         <form id="form-venda">
-            <h2>Registrar Venda</h2>
+            <h2>Nova Venda</h2>
             <div class="input-group">
                 <label>Selecionar Cliente</label>
-                <select id="select-clientes" required>
-                    <option value="">Aguardando clientes...</option>
+                <select id="select-venda" required>
+                    <option value="">Nenhum cliente cadastrado</option>
                 </select>
             </div>
             <div class="input-group">
                 <label>Produto</label>
-                <input type="text" id="produto" required>
+                <input type="text" id="produto" placeholder="Ex: Camisa Jogo 1" required>
             </div>
             <div class="input-group">
                 <label>Valor (R$)</label>
-                <input type="number" id="valor" required>
+                <input type="number" id="valor" step="0.01" required>
             </div>
-            <button type="submit" class="btn-enviar btn-venda">Finalizar Venda</button>
+            <button type="submit" class="btn btn-venda">Finalizar Venda</button>
         </form>
     </div>
 
-    <div class="lista-container">
-        <h3>Lista de Clientes</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>E-mail</th>
-                </tr>
-            </thead>
-            <tbody id="tabela-clientes">
-                </tbody>
-        </table>
+    <div class="card" style="flex-basis: 100%;">
+        <h3>Lista de Sócios/Clientes</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Gestão</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-clientes">
+                    </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<img class="escudo" src="https://upload.wikimedia.org/wikipedia/pt/4/4b/Sao_Paulo_Futebol_Clube.png">
+<img class="escudo" src="https://upload.wikimedia.org/wikipedia/pt/4/4b/Sao_Paulo_Futebol_Clube.png" alt="Escudo SPFC">
 
 <script>
-    const clientes = [];
+    let clientes = JSON.parse(localStorage.getItem('clientes_spfc')) || [];
 
-    // Lógica para cadastrar cliente
-    document.getElementById('form-cliente').addEventListener('submit', function(e) {
+    const formCliente = document.getElementById('form-cliente');
+    const listaHtml = document.getElementById('lista-clientes');
+    const selectVenda = document.getElementById('select-venda');
+
+    // Inicializar página
+    renderizar();
+
+    // Cadastrar Cliente
+    formCliente.addEventListener('submit', (e) => {
         e.preventDefault();
-        
         const nome = document.getElementById('nome').value;
         const email = document.getElementById('email').value;
 
-        // Adiciona ao array
-        clientes.push({ nome, email });
-
-        atualizarInterface();
-        this.reset();
+        clientes.push({ id: Date.now(), nome, email });
+        salvarEDesenhagem();
+        formCliente.reset();
     });
 
-    function atualizarInterface() {
-        const tabela = document.getElementById('tabela-clientes');
-        const select = document.getElementById('select-clientes');
-
-        // Limpa campos
-        tabela.innerHTML = "";
-        select.innerHTML = '<option value="">Selecione o Cliente...</option>';
-
-        // Preenche Tabela e Select
-        clientes.forEach(cliente => {
-            // Adiciona na tabela
-            const linha = `<tr><td>${cliente.nome}</td><td>${cliente.email}</td></tr>`;
-            tabela.innerHTML += linha;
-
-            // Adiciona no select de vendas
-            const opcao = document.createElement('option');
-            opcao.value = cliente.nome;
-            opcao.text = cliente.nome;
-            select.appendChild(opcao);
-        });
+    // Excluir Cliente
+    function excluirCliente(id) {
+        clientes = clientes.filter(c => c.id !== id);
+        salvarEDesenhagem();
     }
 
-    // Lógica para Venda (apenas alerta para teste)
-    document.getElementById('form-venda').addEventListener('submit', function(e) {
+    // Registrar Venda (Simulação)
+    document.getElementById('form-venda').addEventListener('submit', (e) => {
         e.preventDefault();
-        const cliente = document.getElementById('select-clientes').value;
+        const clienteNome = selectVenda.value;
         const prod = document.getElementById('produto').value;
-        alert(`Venda de ${prod} para ${cliente} registrada com sucesso!`);
-        this.reset();
+        alert(`Sucesso! ${prod} vendido para ${clienteNome}!`);
+        e.target.reset();
     });
+
+    function salvarEDesenhagem() {
+        localStorage.setItem('clientes_spfc', JSON.stringify(clientes));
+        renderizar();
+    }
+
+    function renderizar() {
+        // Limpar lista e select
+        listaHtml.innerHTML = '';
+        selectVenda.innerHTML = '<option value="">Selecione o Cliente...</option>';
+
+        if (clientes.length === 0) {
+            listaHtml.innerHTML = '<tr><td colspan="3">Nenhum cliente no banco de dados.</td></tr>';
+            return;
+        }
+
+        clientes.forEach(c => {
+            // Tabela
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${c.nome}</td>
+                <td>${c.email}</td>
+                <td><button class="btn-excluir" onclick="excluirCliente(${c.id})">Apagar</button></td>
+            `;
+            listaHtml.appendChild(tr);
+
+            // Select de Vendas
+            const opt = document.createElement('option');
+            opt.value = c.nome;
+            opt.textContent = c.nome;
+            selectVenda.appendChild(opt);
+        });
+    }
 </script>
 
 </body>
