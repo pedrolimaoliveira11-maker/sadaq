@@ -1,19 +1,15 @@
-document.getElementById('form-venda').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const cliente = document.getElementById('select-venda-cliente').value;
-    const produto = document.getElementById('prod-nome').value.trim();
-    const preco = parseFloat(document.getElementById('prod-preco').value);
-
-    if(cliente && produto && preco > 0) {
-        const venda = {
-            data: new Date().toLocaleString(),
-            cliente,
-            produto,
-            preco
-        };
-        vendas.push(venda);
-        localStorage.setItem('db_vendas_spfc', JSON.stringify(vendas));
-        atualizarVendas();
-        document.getElementById('form-venda').reset();
-    }
-});
+function atualizarVendas() {
+    const corpo = document.getElementById('corpo-tabela-vendas');
+    corpo.innerHTML = '';
+    let total = 0;
+    vendas.forEach(v => {
+        corpo.innerHTML += `<tr>
+            <td>${v.data}</td>
+            <td>${v.cliente}</td>
+            <td>${v.produto}</td>
+            <td>R$ ${v.preco.toFixed(2)}</td>
+        </tr>`;
+        total += v.preco;
+    });
+    document.getElementById('total-caixa').innerText = `Total em Caixa: R$ ${total.toFixed(2)}`;
+}
