@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Tricolor Pro - SPFC</title>
+    <style>
+        /* --- FUNDO COM A BANDEIRA DO SÃO PAULO --- */
+        body {
+            margin: 0;
+            padding: 20px;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            
+            /* Imagem da Bandeira com camada escura para dar leitura */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
+                              url('https://wallpapers.com/images/featured/sao-paulo-fc-6v8v8v8v8v8v8v8v.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        /* --- EFEITO PISCA-PISCA NOS TÍTULOS --- */
+        @keyframes piscaTricolor {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h2, h3 {
+            text-align: center;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ff0000, #ffffff, #000000, #ff0000);
+            background-size: 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: piscaTricolor 4s linear infinite;
+            margin-bottom: 20px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        /* --- LAYOUT E CARDS --- */
+        .main-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(20, 20, 20, 0.85); /* Efeito transparente para ver o fundo */
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #444;
+            flex: 1;
+            min-width: 320px;
+            backdrop-filter: blur(8px); /* Efeito de vidro */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #ccc; font-size: 0.85rem; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            background: rgba(40, 40, 40, 0.8);
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #ff0000;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        /* --- BOTÕES --- */
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-salvar { background: #ff0000; color: white; }
+        .btn-salvar:hover { background: #fff; color: #000; box-shadow: 0 0 20px #ff0000; }
+
+        .btn-venda { background: #000; border: 2px solid #ff0000; color: white; margin-top: 10px; }
+        .btn-venda:hover { background: #222; border-color: #fff; }
+
+        /* --- TABELA --- */
+        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #000; color: #ff0000; padding: 12px; border-bottom: 2px solid #fff; }
+        td { padding: 12px; border-bottom: 1px solid #444; text-align: center; background: rgba(0,0,0,0.4); }
+
+        .btn-excluir {
+            background: transparent;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-excluir:hover { background: #ff4444; color: white; }
+
+        /* --- ESCUDO FLUTUANTE --- */
+        .escudo-fixo {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            filter: drop-shadow(0 0 15px rgba(255,0,0,0.8));
+            animation: bounce 3s ease-in-out infinite;
+            z-index: 1000;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <div class="card">
+            <form id="form-cliente">
+                <h2>Novo Cliente</h2>
+                <div class="input-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="nome-cliente" placeholder="Ex: Rogério Ceni" required>
+                </div>
+                <div class="input-group">
+                    <label>E-mail</label>
+                    <input type="email" id="email-cliente" placeholder="exemplo@spfc.com" required>
+                </div>
+                <button type="submit" class="btn btn-salvar">Cadastrar Sócio</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <form id="form-venda">
+                <h2>Registrar Venda</h2>
+                <div class="input-group">
+                    <label>Selecionar Cliente</label>
+                    <select id="select-cliente-venda" required>
+                        <option value="">Nenhum cliente cadastrado</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Produto</label>
+                    <input type="text" id="produto-venda" placeholder="Ex: Camisa Oficial" required>
+                </div>
+                <div class="input-group">
+                    <label>Preço (R$)</label>
+                    <input type="number" id="preco-venda" step="0.01" required>
+                </div>
+                <button type="submit" class="btn btn-venda">Finalizar Venda</button>
+            </form>
+        </div>
+
+        <div class="card" style="flex-basis: 100%;">
+            <h3>Painel de Controle de Clientes</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpo-tabela">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <img src="https://upload.wikimedia.org/wikipedia/pt/4/4b/Sao_Paulo_Futebol_Clube.png" class="escudo-fixo" alt="SPFC">
+
+    <script>
+        // Banco de dados local (salva no navegador)
+        let clientes = JSON.parse(localStorage.getItem('clientes_spfc')) || [];
+
+        const formCliente = document.getElementById('form-cliente');
+        const corpoTabela = document.getElementById('corpo-tabela');
+        const selectVenda = document.getElementById('select-cliente-venda');
+
+        // Inicializar
+        renderizarTudo();
+
+        // Ação: Cadastrar Cliente
+        formCliente.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nome = document.getElementById('nome-cliente').value;
+            const email = document.getElementById('email-cliente').value;
+
+            clientes.push({ id: Date.now(), nome, email });
+            salvarDados();
+            formCliente.reset();
+        });
+
+        // Ação: Excluir Cliente
+        function excluirCliente(id) {
+            clientes = clientes.filter(c => c.id !== id);
+            salvarDados();
+        }
+
+        // Função para Salvar no LocalStorage e Atualizar Tela
+        function salvarDados() {
+            localStorage.setItem('clientes_spfc', JSON.stringify(clientes));
+            renderizarTudo();
+        }
+
+        // Função para desenhar a tabela e o select de vendas
+        function renderizarTudo() {
+            corpoTabela.innerHTML = '';
+            selectVenda.innerHTML = '<option value="">Selecione um cliente...</option>';
+
+            if (clientes.length === 0) {
+                corpoTabela.innerHTML = '<tr><td colspan="3">Nenhum cliente encontrado.</td></tr>';
+            }
+
+            clientes.forEach(c => {
+                // Adiciona na Tabela
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${c.nome}</td>
+                    <td>${c.email}</td>
+                    <td><button class="btn-excluir" onclick="excluirCliente(${c.id})">Apagar</button></td>
+                `;
+                corpoTabela.appendChild(tr);
+
+                // Adiciona no Select de Vendas
+                const opt = document.createElement('option');
+                opt.value = c.nome;
+                opt.textContent = c.nome;
+                selectVenda.appendChild(opt);
+            });
+        }
+
+        // Simulação de Venda
+        document.getElementById('form-venda').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const cliente = selectVenda.value;
+            const prod = document.getElementById('produto-venda').value;
+            alert(`Soberano! Venda de ${prod} para ${cliente} realizada com sucesso!`);
+            e.target.reset();
+        });
+    </script>
+</body>
+</html>
