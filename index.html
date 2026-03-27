@@ -3,32 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Tricolor Pro - SPFC</title>
+    <title>Sistema de Vendas Soberano - SPFC</title>
     <style>
-        /* --- FUNDO COM A BANDEIRA DO SÃO PAULO --- */
+        /* --- ESTILO VISUAL TRICOLOR --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
         body {
-            margin: 0;
-            padding: 20px;
+            background-color: #0d0d0d;
             color: white;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            
-            /* Imagem da Bandeira com camada escura */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
-                              url('https://wallpapers.com/images/featured/sao-paulo-fc-6v8v8v8v8v8v8v8v.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
+            padding: 20px;
         }
 
-        /* --- ANIMAÇÃO PISCA-PISCA --- */
-        @keyframes piscaTricolor {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .main-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         h2, h3 {
@@ -41,289 +32,203 @@
             animation: piscaTricolor 4s linear infinite;
             margin-bottom: 20px;
             font-weight: 900;
-            letter-spacing: 2px;
         }
 
-        /* --- LAYOUT --- */
-        .main-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            max-width: 1200px;
-            width: 100%;
+        @keyframes piscaTricolor {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
         .card {
-            background: rgba(20, 20, 20, 0.85);
+            background: #1a1a1a;
             padding: 25px;
-            border-radius: 15px;
-            border: 1px solid #444;
+            border-radius: 12px;
+            border: 1px solid #333;
             flex: 1;
-            min-width: 320px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            min-width: 350px;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.1);
         }
 
-        /* --- INPUTS --- */
+        .full-width { flex-basis: 100%; }
+
         .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #ccc; font-size: 0.85rem; }
+        label { display: block; margin-bottom: 5px; color: #aaa; font-size: 0.85rem; }
         
         input, select {
             width: 100%;
             padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #555;
-            background: rgba(40, 40, 40, 0.8);
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #252525;
             color: white;
             outline: none;
-            transition: 0.3s;
         }
 
-        input:focus { border-color: #ff0000; box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+        input:focus { border-color: #ff0000; }
 
-        /* --- BOTÕES --- */
         .btn {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
             transition: 0.3s;
-            margin-bottom: 10px;
         }
 
         .btn-salvar { background: #ff0000; color: white; }
-        .btn-salvar:hover { background: #fff; color: #000; box-shadow: 0 0 20px #ff0000; }
-        
-        .btn-cancelar { background: #555; color: white; display: none; }
+        .btn-salvar:hover { background: #fff; color: #000; box-shadow: 0 0 15px #ff0000; }
 
-        .btn-venda { background: #000; border: 2px solid #ff0000; color: white; }
-        .btn-venda:hover { background: #fff; color: #000; }
+        .btn-venda { background: #000; border: 2px solid #ff0000; color: white; margin-top: 10px; }
+        .btn-venda:hover { background: #333; }
 
-        .btn-exportar { background: #27ae60; color: white; width: auto; padding: 10px 20px; }
-
-        /* --- TABELA --- */
         .table-container { width: 100%; overflow-x: auto; margin-top: 10px; }
         table { width: 100%; border-collapse: collapse; }
         th { background: #000; color: #ff0000; padding: 12px; border-bottom: 2px solid #fff; }
-        td { padding: 12px; border-bottom: 1px solid #444; text-align: center; background: rgba(0,0,0,0.4); }
+        td { padding: 12px; border-bottom: 1px solid #333; text-align: center; }
 
-        .btn-acao { padding: 5px 10px; border-radius: 4px; border: none; cursor: pointer; margin: 2px; }
-        .edit { background: #f39c12; color: white; }
-        .del { background: #e74c3c; color: white; }
+        .total-caixa {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 1.4rem;
+            color: #00ff00;
+            font-weight: bold;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+        }
 
-        /* --- ESCUDO --- */
-        .escudo-fixo {
+        .escudo {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 70px;
-            filter: drop-shadow(0 0 15px red);
-            animation: bounce 3s infinite;
+            width: 60px;
+            animation: bounce 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px red);
         }
 
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="main-wrapper">
-        <div class="card">
-            <form id="form-cliente">
-                <h2 id="titulo-form">Novo Cliente</h2>
-                <input type="hidden" id="cliente-id">
-                
-                <div class="input-group">
-                    <label>Nome Completo</label>
-                    <input type="text" id="nome" placeholder="Ex: Rogério Ceni" required>
-                </div>
-                <div class="input-group">
-                    <label>E-mail</label>
-                    <input type="email" id="email" placeholder="ceni@spfc.com" required>
-                </div>
-                <div class="input-group">
-                    <label>Telefone</label>
-                    <input type="tel" id="telefone" placeholder="(11) 99999-9999">
-                </div>
-                
-                <button type="submit" id="btn-salvar" class="btn btn-salvar">Salvar Cliente</button>
-                <button type="button" id="btn-cancelar" class="btn btn-cancelar" onclick="resetarEstado()">Cancelar Edição</button>
-            </form>
-        </div>
-
-        <div class="card">
-            <form id="form-venda">
-                <h2>Registrar Venda</h2>
-                <div class="input-group">
-                    <label>Selecionar Cliente</label>
-                    <select id="select-cliente-venda" required>
-                        <option value="">Aguardando cadastros...</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>Produto</label>
-                    <input type="text" id="prod-nome" placeholder="Ex: Manto Sagrado" required>
-                </div>
-                <div class="input-group">
-                    <label>Preço (R$)</label>
-                    <input type="number" id="prod-preco" step="0.01" required>
-                </div>
-                <button type="submit" class="btn btn-venda">Finalizar Venda</button>
-            </form>
-        </div>
-
-        <div class="card" style="flex-basis: 100%;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3>Lista de Clientes</h3>
-                <button id="btn-exportar" class="btn btn-exportar">Exportar CSV</button>
+<div class="main-wrapper">
+    <div class="card">
+        <form id="form-cliente">
+            <h2>Novo Cliente</h2>
+            <div class="input-group">
+                <label>Nome do Sócio/Cliente</label>
+                <input type="text" id="nome-cliente" placeholder="Ex: Lucas Moura" required>
             </div>
-            
-            <input type="text" id="busca" placeholder="🔍 Buscar cliente..." onkeyup="filtrarClientes()" style="margin-bottom: 15px;">
+            <button type="submit" class="btn btn-salvar">Cadastrar no Sistema</button>
+        </form>
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Telefone</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="corpo-tabela"></tbody>
-                </table>
-            </div>
+        <div class="table-container">
+            <h3 style="font-size: 1rem; margin-top: 20px;">Clientes Cadastrados</h3>
+            <table>
+                <thead>
+                    <tr><th>Nome</th><th>Ação</th></tr>
+                </thead>
+                <tbody id="lista-clientes-simples"></tbody>
+            </table>
         </div>
     </div>
 
-    <img src="https://upload.wikimedia.org/wikipedia/pt/4/4b/Sao_Paulo_Futebol_Clube.png" class="escudo-fixo" alt="SPFC">
+    <div class="card">
+        <form id="form-venda">
+            <h2>Vender Produto</h2>
+            <div class="input-group">
+                <label>Selecionar Cliente</label>
+                <select id="select-venda-cliente" required>
+                    <option value="">Aguardando clientes...</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Nome do Produto</label>
+                <input type="text" id="prod-nome" placeholder="Ex: Camisa Jogo 1" required>
+            </div>
+            <div class="input-group">
+                <label>Preço de Venda (R$)</label>
+                <input type="number" id="prod-preco" step="0.01" placeholder="0.00" required>
+            </div>
+            <button type="submit" class="btn btn-venda">Finalizar Pedido</button>
+        </form>
+    </div>
 
-    <script>
-        let clientes = JSON.parse(localStorage.getItem('clientes_spfc')) || [];
-        const form = document.getElementById('form-cliente');
-        const corpoTabela = document.getElementById('corpo-tabela');
-        const selectVenda = document.getElementById('select-cliente-venda');
-        const inputId = document.getElementById('cliente-id');
-        const tituloForm = document.getElementById('titulo-form');
-        const btnSalvar = document.getElementById('btn-salvar');
-        const btnCancelar = document.getElementById('btn-cancelar');
+    <div class="card full-width">
+        <h3>Histórico de Vendas Realizadas</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Cliente</th>
+                        <th>Produto</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela-vendas"></tbody>
+            </table>
+        </div>
+        <div id="total-caixa" class="total-caixa">Total em Caixa: R$ 0,00</div>
+    </div>
+</div>
 
-        // Iniciar
-        renderizarTudo();
+<img class="escudo" src="https://upload.wikimedia.org/wikipedia/pt/4/4b/Sao_Paulo_Futebol_Clube.png">
 
-        // SALVAR OU EDITAR
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const cliente = {
-                nome: document.getElementById('nome').value,
-                email: document.getElementById('email').value,
-                telefone: document.getElementById('telefone').value,
-                id: inputId.value ? Number(inputId.value) : Date.now()
+<script>
+    let clientes = JSON.parse(localStorage.getItem('db_clientes_spfc')) || [];
+    let vendas = JSON.parse(localStorage.getItem('db_vendas_spfc')) || [];
+
+    document.getElementById('form-cliente').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nome = document.getElementById('nome-cliente').value.trim();
+        if(nome) {
+            clientes.push(nome);
+            localStorage.setItem('db_clientes_spfc', JSON.stringify(clientes));
+            atualizarClientes();
+            document.getElementById('form-cliente').reset();
+        }
+    });
+
+    function atualizarClientes() {
+        const lista = document.getElementById('lista-clientes-simples');
+        const select = document.getElementById('select-venda-cliente');
+        lista.innerHTML = '';
+        select.innerHTML = '<option value="">Selecione um cliente...</option>';
+        clientes.forEach((c, i) => {
+            lista.innerHTML += `<tr><td>${c}</td><td><button onclick="removerCliente(${i})">Remover</button></td></tr>`;
+            select.innerHTML += `<option value="${c}">${c}</option>`;
+        });
+    }
+
+    function removerCliente(index) {
+        clientes.splice(index, 1);
+        localStorage.setItem('db_clientes_spfc', JSON.stringify(clientes));
+        atualizarClientes();
+    }
+
+    document.getElementById('form-venda').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const cliente = document.getElementById('select-venda-cliente').value;
+        const produto = document.getElementById('prod-nome').value.trim();
+        const preco = parseFloat(document.getElementById('prod-preco').value);
+
+        if(cliente && produto && preco > 0) {
+            const venda = {
+                data: new Date().toLocaleString(),
+                cliente,
+                produto,
+                preco
             };
-
-            if (inputId.value) {
-                const index = clientes.findIndex(c => c.id === cliente.id);
-                clientes[index] = cliente;
-            } else {
-                clientes.push(cliente);
-            }
-
-            salvarDB();
-            resetarEstado();
-        });
-
-        function salvarDB() {
-            localStorage.setItem('clientes_spfc', JSON.stringify(clientes));
-            renderizarTudo();
+            vendas.push(venda);
+            localStorage.setItem('db_vendas_spfc', JSON.stringify(vendas));
+            atualizarVendas();
+            document.getElementById('form-venda').reset();
         }
+    });
 
-        function renderizarTudo() {
-            corpoTabela.innerHTML = '';
-            selectVenda.innerHTML = '<option value="">Selecione o Cliente...</option>';
-
-            clientes.forEach(c => {
-                // Tabela
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${c.nome}</td>
-                    <td>${c.email}</td>
-                    <td>${c.telefone}</td>
-                    <td>
-                        <button class="btn-acao edit" onclick="prepararEdicao(${c.id})">Editar</button>
-                        <button class="btn-acao del" onclick="removerCliente(${c.id})">X</button>
-                    </td>
-                `;
-                corpoTabela.appendChild(tr);
-
-                // Select Vendas
-                const opt = document.createElement('option');
-                opt.value = c.nome;
-                opt.textContent = c.nome;
-                selectVenda.appendChild(opt);
-            });
-        }
-
-        function prepararEdicao(id) {
-            const c = clientes.find(cli => cli.id === id);
-            document.getElementById('nome').value = c.nome;
-            document.getElementById('email').value = c.email;
-            document.getElementById('telefone').value = c.telefone;
-            inputId.value = c.id;
-
-            tituloForm.innerText = "Editando Sócio";
-            btnSalvar.innerText = "Atualizar";
-            btnSalvar.style.backgroundColor = "#f39c12";
-            btnCancelar.style.display = "block";
-        }
-
-        function resetarEstado() {
-            form.reset();
-            inputId.value = "";
-            tituloForm.innerText = "Novo Cliente";
-            btnSalvar.innerText = "Salvar Cliente";
-            btnSalvar.style.backgroundColor = "#ff0000";
-            btnCancelar.style.display = "none";
-        }
-
-        function removerCliente(id) {
-            if(confirm("Deseja apagar este cliente?")) {
-                clientes = clientes.filter(c => c.id !== id);
-                salvarDB();
-            }
-        }
-
-        function filtrarClientes() {
-            const termo = document.getElementById('busca').value.toLowerCase();
-            const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(termo));
-            
-            corpoTabela.innerHTML = '';
-            filtrados.forEach(c => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${c.nome}</td><td>${c.email}</td><td>${c.telefone}</td>
-                <td><button class="btn-acao edit" onclick="prepararEdicao(${c.id})">E</button></td>`;
-                corpoTabela.appendChild(tr);
-            });
-        }
-
-        // VENDA
-        document.getElementById('form-venda').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert(`Venda concluída para ${selectVenda.value}!`);
-            e.target.reset();
-        });
-
-        // EXPORTAR CSV
-        document.getElementById('btn-exportar').addEventListener('click', () => {
-            let csv = "\ufeffNome;E-mail;Telefone\n";
-            clientes.forEach(c => csv += `${c.nome};${c.email};${c.telefone}\n`);
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "clientes_spfc.csv";
-            link.click();
-        });
-    </script>
-</body>
-</html>
+    function atualizarVendas
