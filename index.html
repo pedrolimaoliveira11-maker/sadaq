@@ -2,96 +2,43 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador de Sistemas de Vendas</title>
+    <title>Sistemas de Vendas (Persistente)</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            display: flex;
-            justify-content: center;
-            padding: 50px;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-        h2 { color: #333; text-align: center; }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            outline: none;
-        }
-        button {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button:hover { background-color: #27ae60; }
+        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding: 50px; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        button { background-color: #2ecc71; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
         ul { list-style: none; padding: 0; }
-        li {
-            background: #fff;
-            border-bottom: 1px solid #eee;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: 0.2s;
-        }
-        li:last-child { border-bottom: none; }
-        li:hover { background: #fcfcfc; }
-        .delete-btn {
-            background-color: #ff7675;
-            padding: 5px 10px;
-            font-size: 12px;
-        }
-        .delete-btn:hover { background-color: #d63031; }
+        li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        .delete-btn { background-color: #ff7675; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Sistemas de Vendas</h2>
-    
+    <h2>Meus Sistemas de Vendas</h2>
     <div class="input-group">
-        <input type="text" id="sistemaInput" placeholder="Ex: RD Station CRM">
+        <input type="text" id="sistemaInput" placeholder="Nome do sistema...">
         <button onclick="adicionarItem()">Adicionar</button>
     </div>
-
-    <ul id="listaSistemas">
-        </ul>
+    <ul id="listaSistemas"></ul>
 </div>
 
 <script>
-    // Lista inicial
-    let sistemas = ["RD Station CRM"];
+    // Carrega a lista do armazenamento local ao iniciar
+    let sistemas = JSON.parse(localStorage.getItem('minhaListaVendas')) || ["RD Station CRM"];
+
+    function salvarEAtualizar() {
+        localStorage.setItem('minhaListaVendas', JSON.stringify(sistemas));
+        renderizarLista();
+    }
 
     function renderizarLista() {
         const listaUl = document.getElementById('listaSistemas');
-        listaUl.innerHTML = ''; // Limpa a lista antes de renderizar
-
+        listaUl.innerHTML = '';
         sistemas.forEach((item, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                ${item} 
-                <button class="delete-btn" onclick="removerItem(${index})">Excluir</button>
-            `;
-            listaUl.appendChild(li);
+            listaUl.innerHTML += `<li>${item} <button class="delete-btn" onclick="removerItem(${index})">X</button></li>`;
         });
     }
 
@@ -99,19 +46,17 @@
         const input = document.getElementById('sistemaInput');
         if (input.value.trim() !== "") {
             sistemas.push(input.value);
-            input.value = ""; // Limpa o campo
-            renderizarLista();
+            input.value = "";
+            salvarEAtualizar();
         }
     }
 
     function removerItem(index) {
         sistemas.splice(index, 1);
-        renderizarLista();
+        salvarEAtualizar();
     }
 
-    // Inicializa a lista na tela
     renderizarLista();
 </script>
-
 </body>
 </html>
