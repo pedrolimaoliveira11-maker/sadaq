@@ -2,32 +2,70 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Sistemas de Vendas (Persistente)</title>
+    <title>Sistemas de Vendas - Login</title>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding: 50px; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
-        button { background-color: #2ecc71; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
-        ul { list-style: none; padding: 0; }
-        li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
-        .delete-btn { background-color: #ff7675; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); width: 350px; }
+        h2 { text-align: center; color: #333; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-login { background-color: #3498db; color: white; }
+        .btn-add { background-color: #2ecc71; color: white; margin-top: 10px; }
+        .delete-btn { background-color: #ff7675; color: white; padding: 5px; border-radius: 4px; width: auto; }
+        ul { list-style: none; padding: 0; margin-top: 20px; }
+        li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Controle de Telas */
+        #telaLista { display: none; } /* Começa escondida */
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Meus Sistemas de Vendas</h2>
-    <div class="input-group">
-        <input type="text" id="sistemaInput" placeholder="Nome do sistema...">
-        <button onclick="adicionarItem()">Adicionar</button>
+    <div id="telaLogin" class="card">
+        <h2>Login</h2>
+        <input type="text" id="usuario" placeholder="Usuário (admin)">
+        <input type="password" id="senha" placeholder="Senha (1234)">
+        <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+        <p id="erro" style="color: red; font-size: 12px; text-align: center;"></p>
     </div>
-    <ul id="listaSistemas"></ul>
-</div>
+
+    <div id="telaLista" class="card">
+        <h2>Meus Sistemas</h2>
+        <div style="display: flex; gap: 5px;">
+            <input type="text" id="sistemaInput" placeholder="Novo sistema...">
+            <button class="btn-add" onclick="adicionarItem()" style="width: 80px;">+</button>
+        </div>
+        <ul id="listaSistemas"></ul>
+        <button onclick="logout()" style="margin-top: 20px; background: #95a5a6; color: white;">Sair</button>
+    </div>
 
 <script>
-    // Carrega a lista do armazenamento local ao iniciar
+    // Dados de acesso
+    const USER_CORRETO = "admin";
+    const PASS_CORRETO = "1234";
+
+    // Carrega dados salvos
     let sistemas = JSON.parse(localStorage.getItem('minhaListaVendas')) || ["RD Station CRM"];
+
+    function fazerLogin() {
+        const u = document.getElementById('usuario').value;
+        const s = document.getElementById('senha').value;
+
+        if (u === USER_CORRETO && s === PASS_CORRETO) {
+            document.getElementById('telaLogin').style.display = 'none';
+            document.getElementById('telaLista').style.display = 'block';
+            renderizarLista();
+        } else {
+            document.getElementById('erro').innerText = "Usuário ou senha incorretos!";
+        }
+    }
+
+    function logout() {
+        document.getElementById('telaLogin').style.display = 'block';
+        document.getElementById('telaLista').style.display = 'none';
+        document.getElementById('usuario').value = "";
+        document.getElementById('senha').value = "";
+    }
 
     function salvarEAtualizar() {
         localStorage.setItem('minhaListaVendas', JSON.stringify(sistemas));
@@ -55,8 +93,7 @@
         sistemas.splice(index, 1);
         salvarEAtualizar();
     }
-
-    renderizarLista();
 </script>
+
 </body>
 </html>
