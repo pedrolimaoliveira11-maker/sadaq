@@ -2,21 +2,22 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Sistemas de Vendas - Login</title>
+    <title>Sistemas de Vendas - Acesso Direto</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); width: 350px; }
-        h2 { text-align: center; color: #333; }
+        h2 { text-align: center; color: #333; margin-top: 0; }
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
         button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-login { background-color: #3498db; color: white; }
-        .btn-add { background-color: #2ecc71; color: white; margin-top: 10px; }
-        .delete-btn { background-color: #ff7675; color: white; padding: 5px; border-radius: 4px; width: auto; }
-        ul { list-style: none; padding: 0; margin-top: 20px; }
+        .btn-add { background-color: #2ecc71; color: white; margin-top: 10px; width: 60px !important; }
+        .delete-btn { background-color: #ff7675; color: white; padding: 5px 10px; border-radius: 4px; width: auto; font-size: 12px; }
+        ul { list-style: none; padding: 0; margin-top: 20px; max-height: 200px; overflow-y: auto; }
         li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .logout-link { display: block; text-align: center; margin-top: 15px; color: #888; text-decoration: none; font-size: 14px; cursor: pointer; }
         
-        /* Controle de Telas */
-        #telaLista { display: none; } /* Começa escondida */
+        /* Esconde as telas inicialmente */
+        #telaLogin, #telaLista { display: none; }
     </style>
 </head>
 <body>
@@ -30,42 +31,54 @@
     </div>
 
     <div id="telaLista" class="card">
-        <h2>Meus Sistemas</h2>
+        <h2>Minha Lista</h2>
         <div style="display: flex; gap: 5px;">
             <input type="text" id="sistemaInput" placeholder="Novo sistema...">
-            <button class="btn-add" onclick="adicionarItem()" style="width: 80px;">+</button>
+            <button class="btn-add" onclick="adicionarItem()">+</button>
         </div>
         <ul id="listaSistemas"></ul>
-        <button onclick="logout()" style="margin-top: 20px; background: #95a5a6; color: white;">Sair</button>
+        <span class="logout-link" onclick="logout()">Sair da conta</span>
     </div>
 
 <script>
-    // Dados de acesso
     const USER_CORRETO = "admin";
     const PASS_CORRETO = "1234";
 
-    // Carrega dados salvos
-    let sistemas = JSON.parse(localStorage.getItem('minhaListaVendas')) || ["RD Station CRM"];
+    // 1. Verifica se já estava logado ao carregar a página
+    window.onload = function() {
+        const logado = localStorage.getItem('usuarioLogado');
+        if (logado === 'true') {
+            mostrarLista();
+        } else {
+            document.getElementById('telaLogin').style.display = 'block';
+        }
+    };
 
     function fazerLogin() {
         const u = document.getElementById('usuario').value;
         const s = document.getElementById('senha').value;
 
         if (u === USER_CORRETO && s === PASS_CORRETO) {
-            document.getElementById('telaLogin').style.display = 'none';
-            document.getElementById('telaLista').style.display = 'block';
-            renderizarLista();
+            localStorage.setItem('usuarioLogado', 'true'); // Salva que o login foi feito
+            mostrarLista();
         } else {
-            document.getElementById('erro').innerText = "Usuário ou senha incorretos!";
+            document.getElementById('erro').innerText = "Dados incorretos!";
         }
     }
 
-    function logout() {
-        document.getElementById('telaLogin').style.display = 'block';
-        document.getElementById('telaLista').style.display = 'none';
-        document.getElementById('usuario').value = "";
-        document.getElementById('senha').value = "";
+    function mostrarLista() {
+        document.getElementById('telaLogin').style.display = 'none';
+        document.getElementById('telaLista').style.display = 'block';
+        renderizarLista();
     }
+
+    function logout() {
+        localStorage.removeItem('usuarioLogado'); // Remove a "lembrança" do login
+        location.reload(); // Recarrega a página para voltar ao login
+    }
+
+    // --- LÓGICA DA LISTA ---
+    let sistemas = JSON.parse(localStorage.getItem('minhaListaVendas')) || ["RD Station CRM"];
 
     function salvarEAtualizar() {
         localStorage.setItem('minhaListaVendas', JSON.stringify(sistemas));
