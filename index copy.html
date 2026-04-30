@@ -3,266 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Tricolor Pro - SPFC</title>
+    <title>Warship Defender: Alien Invasion</title>
     <style>
-        /* --- FUNDO COM A BANDEIRA DO SÃO PAULO --- */
-        body {
-            margin: 0;
-            padding: 20px;
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            
-            /* Imagem da Bandeira com camada escura para dar leitura */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
-                              url('https://wallpapers.com/images/featured/sao-paulo-fc-6v8v8v8v8v8v8v8v.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-        }
-
-        /* --- EFEITO PISCA-PISCA NOS TÍTULOS --- */
-        @keyframes piscaTricolor {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        h2, h3 {
-            text-align: center;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, #ff0000, #ffffff, #000000, #ff0000);
-            background-size: 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: piscaTricolor 4s linear infinite;
-            margin-bottom: 20px;
-            font-weight: 900;
-            letter-spacing: 2px;
-        }
-
-        /* --- LAYOUT E CARDS --- */
-        .main-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        .card {
-            background: rgba(20, 20, 20, 0.85); /* Efeito transparente para ver o fundo */
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid #444;
-            flex: 1;
-            min-width: 320px;
-            backdrop-filter: blur(8px); /* Efeito de vidro */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #ccc; font-size: 0.85rem; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Courier New', monospace; user-select: none; cursor: none; }
+        #game-container { width: 100vw; height: 100vh; background: radial-gradient(circle at center, #1B2735 0%, #090A0F 100%); position: relative; overflow: hidden; transition: filter 0.5s; }
         
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #555;
-            background: rgba(40, 40, 40, 0.8);
-            color: white;
-            outline: none;
-            transition: 0.3s;
+        /* Câmera Lenta */
+        .slow-mo { filter: sepia(0.5) hue-rotate(180deg) brightness(1.2); }
+
+        /* HUD */
+        #ui { position: absolute; top: 20px; left: 20px; color: #fff; z-index: 100; pointer-events: none; }
+        .stat { font-size: 22px; font-weight: bold; text-shadow: 0 0 10px #00ff41; margin-bottom: 5px; }
+
+        /* NAVE DE GUERRA (PLAYER) */
+        #player {
+            width: 60px; height: 80px; position: absolute; bottom: 30px; left: 50%;
+            transform: translateX(-50%); background: #535c68; border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(255,255,255,0.2);
+            z-index: 10; border: 2px solid #3d464d; pointer-events: none;
         }
+        #player.gold { background: #ffd700; box-shadow: 0 0 30px #ffd700; border-color: #b8860b; }
+        #player::before { content: ''; position: absolute; top: -15px; left: 15px; width: 30px; height: 30px; background: #747d8c; border-radius: 5px; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); border: 2px solid #3d464d; }
+        #player::after { content: ''; position: absolute; bottom: 0; left: -20px; width: 100px; height: 40px; background: #4a5159; border-radius: 5px; clip-path: polygon(0% 100%, 15% 0%, 85% 0%, 100% 100%); border: 2px solid #3d464d; z-index: -1; }
+        .cannon { position: absolute; width: 8px; height: 25px; background: #3d464d; border-radius: 2px; top: 40px; }
+        .cannon.left { left: -5px; } .cannon.right { right: -5px; }
 
-        input:focus, select:focus {
-            border-color: #ff0000;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        /* INIMIGO ALIENÍGENA */
+        .alien { 
+            width: 50px; height: 40px; position: absolute; 
+            background: #2ecc71; /* Verde alien */
+            clip-path: polygon(20% 0%, 80% 0%, 100% 40%, 80% 100%, 20% 100%, 0% 40%);
+            box-shadow: inset 0 0 10px #000;
+            z-index: 5;
         }
-
-        /* --- BOTÕES --- */
-        .btn {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.3s;
+        /* Olhos do Alien */
+        .alien::before, .alien::after {
+            content: ''; position: absolute; top: 10px; width: 10px; height: 12px;
+            background: #000; border-radius: 50%;
         }
+        .alien::before { left: 10px; transform: rotate(-20deg); }
+        .alien::after { right: 10px; transform: rotate(20deg); }
 
-        .btn-salvar { background: #ff0000; color: white; }
-        .btn-salvar:hover { background: #fff; color: #000; box-shadow: 0 0 20px #ff0000; }
+        /* TIROS */
+        .bullet { width: 5px; height: 20px; background: #ffff00; position: absolute; box-shadow: 0 0 10px #ffff00; }
+        .alien-laser { width: 4px; height: 15px; background: #e74c3c; position: absolute; box-shadow: 0 0 10px #e74c3c; border-radius: 2px; }
 
-        .btn-venda { background: #000; border: 2px solid #ff0000; color: white; margin-top: 10px; }
-        .btn-venda:hover { background: #222; border-color: #fff; }
+        /* METEORO */
+        .meteor { position: absolute; background: #5d4037; border-radius: 50% 20% 50% 30%; box-shadow: inset -5px -5px 0 rgba(0,0,0,0.4); }
 
-        /* --- TABELA --- */
-        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #000; color: #ff0000; padding: 12px; border-bottom: 2px solid #fff; }
-        td { padding: 12px; border-bottom: 1px solid #444; text-align: center; background: rgba(0,0,0,0.4); }
-
-        .btn-excluir {
-            background: transparent;
-            color: #ff4444;
-            border: 1px solid #ff4444;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-excluir:hover { background: #ff4444; color: white; }
-
-        /* --- ESCUDO FLUTUANTE --- */
-        .escudo-fixo {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 80px;
-            filter: drop-shadow(0 0 15px rgba(255,0,0,0.8));
-            animation: bounce 3s ease-in-out infinite;
-            z-index: 1000;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
+        #game-over { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; text-align: center; z-index: 1000; background: rgba(0,0,0,0.9); padding: 50px; border: 3px solid #ff4757; border-radius: 20px; }
+        button { padding: 15px 30px; background: #2ecc71; border: none; cursor: pointer; font-weight: bold; border-radius: 5px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="main-wrapper">
-        <div class="card">
-            <form id="form-cliente">
-                <h2>Novo Cliente</h2>
-                <div class="input-group">
-                    <label>Nome Completo</label>
-                    <input type="text" id="nome-cliente" placeholder="Ex: Rogério Ceni" required>
-                </div>
-                <div class="input-group">
-                    <label>E-mail</label>
-                    <input type="email" id="email-cliente" placeholder="exemplo@spfc.com" required>
-                </div>
-                <button type="submit" class="btn btn-salvar">Cadastrar Sócio</button>
-            </form>
-        </div>
-
-        <div class="card">
-            <form id="form-venda">
-                <h2>Registrar Venda</h2>
-                <div class="input-group">
-                    <label>Selecionar Cliente</label>
-                    <select id="select-cliente-venda" required>
-                        <option value="">Nenhum cliente cadastrado</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>Produto</label>
-                    <input type="text" id="produto-venda" placeholder="Ex: Camisa Oficial" required>
-                </div>
-                <div class="input-group">
-                    <label>Preço (R$)</label>
-                    <input type="number" id="preco-venda" step="0.01" required>
-                </div>
-                <button type="submit" class="btn btn-venda">Finalizar Venda</button>
-            </form>
-        </div>
-
-        <div class="card" style="flex-basis: 100%;">
-            <h3>Painel de Controle de Clientes</h3>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="corpo-tabela">
-                        </tbody>
-                </table>
-            </div>
-        </div>
+<div id="game-container">
+    <div id="ui">
+        <div class="stat">SCORE: <span id="score">0</span></div>
+        <div class="stat">VIDAS: <span id="lives">3</span></div>
+        <div id="level-msg" style="color: #ffff00;">INVASÃO ALIEN INICIADA</div>
     </div>
+    <div id="game-over">
+        <h1>TERRA CONQUISTADA</h1>
+        <button onclick="location.reload()">REVIDAR</button>
+    </div>
+    <div id="player">
+        <div id="shield-visual" style="display:none; position:absolute; width:110px; height:110px; border:3px solid #00d2ff; border-radius:50%; top:-15px; left:-25px; box-shadow:0 0 15px #00d2ff;"></div>
+        <div class="cannon left"></div>
+        <div class="cannon right"></div>
+    </div>
+</div>
 
-    <img src="https://upload.wikimedia.org/wikipedia/pt/4/4b/Sao_Paulo_Futebol_Clube.png" class="escudo-fixo" alt="SPFC">
+<script>
+    const container = document.getElementById('game-container');
+    const player = document.getElementById('player');
+    const shieldVis = document.getElementById('shield-visual');
+    let playerX = window.innerWidth / 2;
+    let score = 0, lives = 3, level = 1, active = true, isShielded = false;
+    let timeScale = 1;
 
-    <script>
-        // Banco de dados local (salva no navegador)
-        let clientes = JSON.parse(localStorage.getItem('clientes_spfc')) || [];
+    // CONTROLE MOUSE
+    document.addEventListener('mousemove', (e) => {
+        if (!active) return;
+        playerX = e.clientX;
+        playerX = Math.max(50, Math.min(window.innerWidth - 50, playerX));
+        player.style.left = playerX + 'px';
+    });
 
-        const formCliente = document.getElementById('form-cliente');
-        const corpoTabela = document.getElementById('corpo-tabela');
-        const selectVenda = document.getElementById('select-cliente-venda');
+    // TIRO JOGADOR
+    setInterval(() => {
+        if (!active) return;
+        createBullet(0);
+        if(level >= 2) { createBullet(-25); createBullet(25); }
+    }, 200);
 
-        // Inicializar
-        renderizarTudo();
-
-        // Ação: Cadastrar Cliente
-        formCliente.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const nome = document.getElementById('nome-cliente').value;
-            const email = document.getElementById('email-cliente').value;
-
-            clientes.push({ id: Date.now(), nome, email });
-            salvarDados();
-            formCliente.reset();
-        });
-
-        // Ação: Excluir Cliente
-        function excluirCliente(id) {
-            clientes = clientes.filter(c => c.id !== id);
-            salvarDados();
-        }
-
-        // Função para Salvar no LocalStorage e Atualizar Tela
-        function salvarDados() {
-            localStorage.setItem('clientes_spfc', JSON.stringify(clientes));
-            renderizarTudo();
-        }
-
-        // Função para desenhar a tabela e o select de vendas
-        function renderizarTudo() {
-            corpoTabela.innerHTML = '';
-            selectVenda.innerHTML = '<option value="">Selecione um cliente...</option>';
-
-            if (clientes.length === 0) {
-                corpoTabela.innerHTML = '<tr><td colspan="3">Nenhum cliente encontrado.</td></tr>';
-            }
-
-            clientes.forEach(c => {
-                // Adiciona na Tabela
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${c.nome}</td>
-                    <td>${c.email}</td>
-                    <td><button class="btn-excluir" onclick="excluirCliente(${c.id})">Apagar</button></td>
-                `;
-                corpoTabela.appendChild(tr);
-
-                // Adiciona no Select de Vendas
-                const opt = document.createElement('option');
-                opt.value = c.nome;
-                opt.textContent = c.nome;
-                selectVenda.appendChild(opt);
+    function createBullet(offset) {
+        const b = document.createElement('div');
+        b.className = 'bullet';
+        b.style.left = (playerX + offset - 2) + 'px';
+        b.style.bottom = '100px';
+        container.appendChild(b);
+        let pos = 100;
+        const move = setInterval(() => {
+            pos += 15; b.style.bottom = pos + 'px';
+            document.querySelectorAll('.alien, .meteor').forEach(t => {
+                if (checkCol(b, t)) {
+                    explode(t);
+                    t.remove(); b.remove(); clearInterval(move);
+                    score += 100; updateUI();
+                }
             });
-        }
+            if (pos > window.innerHeight) { b.remove(); clearInterval(move); }
+        }, 16);
+    }
 
-        // Simulação de Venda
-        document.getElementById('form-venda').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const cliente = selectVenda.value;
-            const prod = document.getElementById('produto-venda').value;
-            alert(`Soberano! Venda de ${prod} para ${cliente} realizada com sucesso!`);
-            e.target.reset();
-        });
-    </script>
-</body>
-</html>
+    // SPAWN ALIENS QUE ATIRAM
+    function spawnAlien() {
+        if (!active) return;
+        const a = document.createElement('div');
+        a.className = 'alien';
+        a.style.left = Math.random() * (window.innerWidth - 50) + 'px';
+        a.style.top = '-50px';
+        container.appendChild(a);
+
+        let y = -50;
+        const move = setInterval(() => {
+            y += 2.5 * timeScale;
+            a.style.top = y + 'px';
+
+            // Chance do Alien atirar
+            if (Math.random() < 0.01 * timeScale) alienShoot(a);
+
+            if (checkCol(a, player)) { takeDamage(); a.remove(); clearInterval(move); }
+            if (y > window.innerHeight) { a.remove(); clearInterval(move); }
+        }, 30);
+    }
+
+    function alienShoot(alien) {
+        if (!alien.parentElement) return;
+        const laser = document.createElement('div');
+        laser.className = 'alien-laser';
+        const rect = alien.getBoundingClientRect();
+        laser.style.left = (rect.left + rect.width/2) + 'px';
+        laser.style.top = rect.bottom + 'px';
+        container.appendChild(laser);
+
+        let ly = rect.bottom;
+        const lMove = setInterval(() => {
+            ly += 7 * timeScale;
+            laser.style.top = ly + 'px';
+            if (checkCol(laser, player)) { takeDamage(); laser.remove(); clearInterval(lMove); }
+            if (ly > window.innerHeight) { laser.remove(); clearInterval(lMove); }
+        }, 20);
+    }
+
+    function spawnMeteor
