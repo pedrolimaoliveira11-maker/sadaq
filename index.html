@@ -3,143 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jogo Calmamente</title>
+<title>Teste de Humor</title>
 
 <style>
 body{
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg,#4facfe,#00f2fe);
-    text-align:center;
-    color:white;
+    background: linear-gradient(135deg,#4e54c8,#8f94fb);
     margin:0;
-    padding:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
 }
 
 .container{
+    background:#fff;
+    width:90%;
     max-width:700px;
-    margin:auto;
-    background:rgba(0,0,0,0.25);
-    padding:20px;
+    padding:30px;
     border-radius:20px;
+    box-shadow:0 0 20px rgba(0,0,0,.2);
 }
 
-button{
-    padding:12px 20px;
-    margin:10px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:16px;
-    background:#fff;
+h1{
+    text-align:center;
     color:#333;
 }
 
-#respirar{
-    width:120px;
-    height:120px;
-    background:white;
-    border-radius:50%;
-    margin:20px auto;
-    transition:all 4s linear;
+#pergunta{
+    font-size:22px;
+    margin:20px 0;
+    text-align:center;
 }
 
-input{
-    padding:10px;
-    width:80%;
+button{
+    width:100%;
+    margin:8px 0;
+    padding:15px;
     border:none;
     border-radius:10px;
+    background:#4e54c8;
+    color:#fff;
     font-size:16px;
+    cursor:pointer;
 }
 
-#chat{
-    min-height:120px;
-    padding:10px;
-    background:rgba(255,255,255,0.15);
-    border-radius:10px;
+button:hover{
+    background:#373cc2;
+}
+
+#resultado{
+    display:none;
+    text-align:center;
+}
+
+.pontuacao{
+    font-size:30px;
+    color:#4e54c8;
+    font-weight:bold;
+}
+
+.alerta{
     margin-top:15px;
+    color:#666;
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
-<h1>🌱 Calmamente</h1>
-<p>Um pequeno jogo para ajudar a relaxar.</p>
 
-<h2>💨 Exercício de Respiração</h2>
+<h1>🌱 Check-in Emocional</h1>
 
-<div id="respirar"></div>
+<div id="quiz">
+    <h2 id="pergunta"></h2>
 
-<button onclick="iniciarRespiracao()">Começar Respiração</button>
+    <button onclick="responder(0)">Nunca</button>
+    <button onclick="responder(1)">Alguns dias</button>
+    <button onclick="responder(2)">Frequentemente</button>
+    <button onclick="responder(3)">Quase todos os dias</button>
+</div>
 
-<h2>⭐ Missões Positivas</h2>
+<div id="resultado">
+    <h2>Resultado</h2>
 
-<p id="missao">Clique para receber uma missão.</p>
+    <div class="pontuacao" id="total"></div>
 
-<button onclick="novaMissao()">Nova Missão</button>
+    <h3 id="nivel"></h3>
 
-<h2>🤖 Conversa de Apoio</h2>
+    <p id="mensagem"></p>
 
-<input id="mensagem" placeholder="Como você está se sentindo?" />
+    <p class="alerta">
+        Este teste é apenas informativo e não substitui avaliação médica.
+    </p>
 
-<button onclick="responder()">Enviar</button>
-
-<div id="chat"></div>
+    <button onclick="location.reload()">
+        Refazer Teste
+    </button>
+</div>
 
 </div>
 
 <script>
-function iniciarRespiracao(){
-    let bola = document.getElementById("respirar");
 
-    bola.style.transform = "scale(1.8)";
-
-    setTimeout(()=>{
-        bola.style.transform = "scale(1)";
-    },4000);
-
-    alert("Inspire por 4 segundos e expire por 4 segundos.");
-}
-
-const missoes = [
-"🌞 Abra a janela e observe o céu por 2 minutos.",
-"💧 Beba um copo de água.",
-"🚶 Caminhe pela casa durante 3 minutos.",
-"😊 Pense em algo bom que aconteceu nesta semana.",
-"🎵 Ouça sua música favorita.",
-"💚 Escreva 3 coisas pelas quais você é grato."
+const perguntas = [
+"Você tem sentido pouca vontade de fazer atividades?",
+"Você tem se sentido triste ou desanimado?",
+"Você está dormindo mal?",
+"Você sente pouca energia durante o dia?",
+"Você tem dificuldade para se concentrar?",
+"Você tem evitado contato com amigos ou familiares?",
+"Você sente pouca esperança em relação ao futuro?",
+"Você se sente sozinho com frequência?"
 ];
 
-function novaMissao(){
-    let sorteio = Math.floor(Math.random()*missoes.length);
-    document.getElementById("missao").innerText = missoes[sorteio];
+let atual = 0;
+let pontos = 0;
+
+function carregarPergunta(){
+
+    document.getElementById("pergunta").innerText =
+    perguntas[atual];
 }
 
-function responder(){
-    let msg = document.getElementById("mensagem").value.toLowerCase();
-    let resposta = "";
+function responder(valor){
 
-    if(msg.includes("triste")){
-        resposta = "💚 Sinto muito que esteja se sentindo triste. Você já superou momentos difíceis antes.";
+    pontos += valor;
+    atual++;
+
+    if(atual < perguntas.length){
+        carregarPergunta();
+    }else{
+        mostrarResultado();
     }
-    else if(msg.includes("ansioso") || msg.includes("ansiedade")){
-        resposta = "🌿 Vamos respirar juntos. Inspire lentamente e solte o ar devagar.";
+}
+
+function mostrarResultado(){
+
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("resultado").style.display = "block";
+
+    let nivel = "";
+    let mensagem = "";
+
+    if(pontos <= 5){
+        nivel = "😊 Bem-estar Positivo";
+        mensagem =
+        "Seu resultado mostra poucos sinais de sofrimento emocional.";
     }
-    else if(msg.includes("cansado")){
-        resposta = "☁️ Seu descanso é importante. Tente fazer uma pausa e cuidar de você.";
+
+    else if(pontos <= 10){
+        nivel = "🌿 Atenção";
+        mensagem =
+        "Você apresentou alguns sinais de estresse emocional.";
     }
-    else if(msg.includes("feliz")){
-        resposta = "🌟 Que bom! Aproveite esse momento e compartilhe essa energia positiva.";
+
+    else if(pontos <= 16){
+        nivel = "💛 Moderado";
+        mensagem =
+        "Seu resultado indica sinais importantes de sofrimento emocional. Conversar com um psicólogo pode ajudar.";
     }
+
     else{
-        resposta = "🤗 Obrigado por compartilhar. Você merece cuidado e gentileza consigo mesmo.";
+        nivel = "❤️ Elevado";
+        mensagem =
+        "Você relatou muitos sintomas emocionais. Considere procurar apoio profissional para uma avaliação adequada.";
     }
 
-    document.getElementById("chat").innerHTML =
-        "<b>Você:</b> " + msg +
-        "<br><br><b>Calmamente:</b> " + resposta;
+    document.getElementById("total").innerText =
+    pontos + " pontos";
+
+    document.getElementById("nivel").innerText =
+    nivel;
+
+    document.getElementById("mensagem").innerText =
+    mensagem;
 }
+
+carregarPergunta();
+
 </script>
 
 </body>
