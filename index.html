@@ -1,111 +1,145 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Sistemas de Vendas - Acesso Direto</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); width: 350px; }
-        h2 { text-align: center; color: #333; margin-top: 0; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-login { background-color: #3498db; color: white; }
-        .btn-add { background-color: #2ecc71; color: white; margin-top: 10px; width: 60px !important; }
-        .delete-btn { background-color: #ff7675; color: white; padding: 5px 10px; border-radius: 4px; width: auto; font-size: 12px; }
-        ul { list-style: none; padding: 0; margin-top: 20px; max-height: 200px; overflow-y: auto; }
-        li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .logout-link { display: block; text-align: center; margin-top: 15px; color: #888; text-decoration: none; font-size: 14px; cursor: pointer; }
-        
-        /* Esconde as telas inicialmente */
-        #telaLogin, #telaLista { display: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo Calmamente</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#4facfe,#00f2fe);
+    text-align:center;
+    color:white;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    background:rgba(0,0,0,0.25);
+    padding:20px;
+    border-radius:20px;
+}
+
+button{
+    padding:12px 20px;
+    margin:10px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+    background:#fff;
+    color:#333;
+}
+
+#respirar{
+    width:120px;
+    height:120px;
+    background:white;
+    border-radius:50%;
+    margin:20px auto;
+    transition:all 4s linear;
+}
+
+input{
+    padding:10px;
+    width:80%;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+}
+
+#chat{
+    min-height:120px;
+    padding:10px;
+    background:rgba(255,255,255,0.15);
+    border-radius:10px;
+    margin-top:15px;
+}
+</style>
 </head>
+
 <body>
 
-    <div id="telaLogin" class="card">
-        <h2>Login</h2>
-        <input type="text" id="usuario" placeholder="Usuário (admin)">
-        <input type="password" id="senha" placeholder="Senha (1234)">
-        <button class="btn-login" onclick="fazerLogin()">Entrar</button>
-        <p id="erro" style="color: red; font-size: 12px; text-align: center;"></p>
-    </div>
+<div class="container">
+<h1>🌱 Calmamente</h1>
+<p>Um pequeno jogo para ajudar a relaxar.</p>
 
-    <div id="telaLista" class="card">
-        <h2>Minha Lista</h2>
-        <div style="display: flex; gap: 5px;">
-            <input type="text" id="sistemaInput" placeholder="Novo sistema...">
-            <button class="btn-add" onclick="adicionarItem()">+</button>
-        </div>
-        <ul id="listaSistemas"></ul>
-        <span class="logout-link" onclick="logout()">Sair da conta</span>
-    </div>
+<h2>💨 Exercício de Respiração</h2>
+
+<div id="respirar"></div>
+
+<button onclick="iniciarRespiracao()">Começar Respiração</button>
+
+<h2>⭐ Missões Positivas</h2>
+
+<p id="missao">Clique para receber uma missão.</p>
+
+<button onclick="novaMissao()">Nova Missão</button>
+
+<h2>🤖 Conversa de Apoio</h2>
+
+<input id="mensagem" placeholder="Como você está se sentindo?" />
+
+<button onclick="responder()">Enviar</button>
+
+<div id="chat"></div>
+
+</div>
 
 <script>
-    const USER_CORRETO = "admin";
-    const PASS_CORRETO = "1234";
+function iniciarRespiracao(){
+    let bola = document.getElementById("respirar");
 
-    // 1. Verifica se já estava logado ao carregar a página
-    window.onload = function() {
-        const logado = localStorage.getItem('usuarioLogado');
-        if (logado === 'true') {
-            mostrarLista();
-        } else {
-            document.getElementById('telaLogin').style.display = 'block';
-        }
-    };
+    bola.style.transform = "scale(1.8)";
 
-    function fazerLogin() {
-        const u = document.getElementById('usuario').value;
-        const s = document.getElementById('senha').value;
+    setTimeout(()=>{
+        bola.style.transform = "scale(1)";
+    },4000);
 
-        if (u === USER_CORRETO && s === PASS_CORRETO) {
-            localStorage.setItem('usuarioLogado', 'true'); // Salva que o login foi feito
-            mostrarLista();
-        } else {
-            document.getElementById('erro').innerText = "Dados incorretos!";
-        }
+    alert("Inspire por 4 segundos e expire por 4 segundos.");
+}
+
+const missoes = [
+"🌞 Abra a janela e observe o céu por 2 minutos.",
+"💧 Beba um copo de água.",
+"🚶 Caminhe pela casa durante 3 minutos.",
+"😊 Pense em algo bom que aconteceu nesta semana.",
+"🎵 Ouça sua música favorita.",
+"💚 Escreva 3 coisas pelas quais você é grato."
+];
+
+function novaMissao(){
+    let sorteio = Math.floor(Math.random()*missoes.length);
+    document.getElementById("missao").innerText = missoes[sorteio];
+}
+
+function responder(){
+    let msg = document.getElementById("mensagem").value.toLowerCase();
+    let resposta = "";
+
+    if(msg.includes("triste")){
+        resposta = "💚 Sinto muito que esteja se sentindo triste. Você já superou momentos difíceis antes.";
+    }
+    else if(msg.includes("ansioso") || msg.includes("ansiedade")){
+        resposta = "🌿 Vamos respirar juntos. Inspire lentamente e solte o ar devagar.";
+    }
+    else if(msg.includes("cansado")){
+        resposta = "☁️ Seu descanso é importante. Tente fazer uma pausa e cuidar de você.";
+    }
+    else if(msg.includes("feliz")){
+        resposta = "🌟 Que bom! Aproveite esse momento e compartilhe essa energia positiva.";
+    }
+    else{
+        resposta = "🤗 Obrigado por compartilhar. Você merece cuidado e gentileza consigo mesmo.";
     }
 
-    function mostrarLista() {
-        document.getElementById('telaLogin').style.display = 'none';
-        document.getElementById('telaLista').style.display = 'block';
-        renderizarLista();
-    }
-
-    function logout() {
-        localStorage.removeItem('usuarioLogado'); // Remove a "lembrança" do login
-        location.reload(); // Recarrega a página para voltar ao login
-    }
-
-    // --- LÓGICA DA LISTA ---
-    let sistemas = JSON.parse(localStorage.getItem('minhaListaVendas')) || ["RD Station CRM"];
-
-    function salvarEAtualizar() {
-        localStorage.setItem('minhaListaVendas', JSON.stringify(sistemas));
-        renderizarLista();
-    }
-
-    function renderizarLista() {
-        const listaUl = document.getElementById('listaSistemas');
-        listaUl.innerHTML = '';
-        sistemas.forEach((item, index) => {
-            listaUl.innerHTML += `<li>${item} <button class="delete-btn" onclick="removerItem(${index})">X</button></li>`;
-        });
-    }
-
-    function adicionarItem() {
-        const input = document.getElementById('sistemaInput');
-        if (input.value.trim() !== "") {
-            sistemas.push(input.value);
-            input.value = "";
-            salvarEAtualizar();
-        }
-    }
-
-    function removerItem(index) {
-        sistemas.splice(index, 1);
-        salvarEAtualizar();
-    }
+    document.getElementById("chat").innerHTML =
+        "<b>Você:</b> " + msg +
+        "<br><br><b>Calmamente:</b> " + resposta;
+}
 </script>
 
 </body>
