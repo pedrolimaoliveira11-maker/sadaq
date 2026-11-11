@@ -1,0 +1,7 @@
+biblioteca/
+├── package.json
+├── .env
+├── schema.sql
+├── server.js          ← backend + frontend em um só arquivo
+└── public/
+    └── index.html     ← frontend React (via CDN, sem build)
