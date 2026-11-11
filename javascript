@@ -321,3 +321,276 @@ const PORT = process.env.PORT || 3000;
 initDatabase().then(() => {
   app.listen(PORT, () => console.log('🚀 http://localhost:' + PORT));
 });
+/* ============================================================
+   FRONTEND — React 18 puro (sem JSX, sem build)
+   ============================================================ */
+const { useState, useEffect, useCallback, createElement: h } = React;
+
+/* ---------- API helper ---------- */
+async function apiRequest(method, path, body) {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = localStorage.getItem('token');
+  if (token) headers.Authorization = 'Bearer ' + token;
+
+  const res = await fetch('/api' + path, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (res.status === 401) {
+    localStorage.removeItem('token');
+    window.location.reload();
+    return;
+  }
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+  if (!res.ok) throw new Error((data && data.erro) || 'Erro na requisição');
+  return data;
+}
+
+const api = {
+  get: (p) => apiRequest('GET', p),
+  post: (p, b) => apiRequest('POST', p, b),
+  put: (p, b) => apiRequest('PUT', p, b),
+  del: (p) => apiRequest('DELETE', p),
+};
+
+/* ---------- Tela de Login ---------- */
+function Login(props) {
+  const [email, setEmail] = useState('admin@biblio.com');
+  const [senha, setSenha] = useState('admin123');
+  const [erro, setErro] = useState('');
+
+  async function submit(e) {
+    e.preventDefault();
+    setErro('');
+    try {
+      const data = await api.post('/auth/login', { email, senha });
+      localStorage.setItem('token', data.token);
+      props.onLogin();
+    } catch (err) {
+      setErro(err.message);
+    }
+  }
+
+  return h('div', { className: 'card', style: { maxWidth: 360, margin: '80px auto' } },
+    h('h2', null, '📚 Login Biblioteca'),
+    h('form', { onSubmit: submit },
+      h('div', { className: 'row' },
+        h('input', {
+          placeholder: 'Email', value: email,
+          onChange: e => setEmail(e.target.value), style: { flex: 1 },
+        })
+      ),
+      h('div', { className: 'row' },
+        h('input', {
+          type: 'password', placeholder: 'Senha', value: senha,
+          onChange: e => setSenha(e.target.value), style: { flex: 1 },
+        })
+      ),
+      h('button', { type: 'submit', style: { width: '100%' } }, 'Entrar'),
+      erro ? h('div', { className: 'erro' }, erro) : null,
+      h('div', { style: { fontSize: 12, color: '#888', marginTop: 10 } },
+        'Padrão: admin@biblio.com / admin123')
+    )
+  );
+}
+
+/* ---------- Aba Livros ---------- */
+function AbaLivros() {
+  const [livros, setLivros] = useState([]);
+  const [busca, setBusca] = useState('');
+  const [form, setForm] = useState({ titulo: '', autor: '', isbn: '', ano: '', categoria: '', quantidade_total: 1 });
+  const [erro, setErro] = useState('');
+  const [ok, setOk] = useState('');
+
+  const carregar = useCallback(async () => {
+    try {
+      const q = busca ? '?q=' + encodeURIComponent(busca) : '';
+      setLivros(await api.get('/livros' + q));
+    } catch (e) { setErro(e.message); }
+  }, [busca]);
+
+  useEffect(() => { carregar(); }, [carregar]);
+
+  async function salvar(e) {
+    e.preventDefault();
+    setErro(''); setOk('');
+    try {
+      const payload = Object.assign({}, form, { ano: form.ano ? Number(form.ano) : null });
+      await api.post('/livros', payload);
+      setForm({ titulo: '', autor: '', isbn: '', ano: '', categoria: '', quantidade_total: 1 });
+      setOk('Livro cadastrado!');
+      carregar();
+    } catch (err) { setErro(err.message); }
+  }
+
+  async function excluir(id) {
+    if (!confirm('Excluir livro?')) return;
+    try { await api.del('/livros/' + id); carregar(); }
+    catch (err) { setErro(err.message); }
+  }
+
+  return h('div', null,
+    h('div', { className: 'card' },
+      h('h3', null, 'Novo Livro'),
+      h('form', { onSubmit: salvar },
+        h('div', { className: 'row' },
+          h('input', { placeholder: 'Título*', value: form.titulo, required: true, onChange: e => setForm(Object.assign({}, form, { titulo: e.target.value })) }),
+          h('input', { placeholder: 'Autor*', value: form.autor, required: true, onChange: e => setForm(Object.assign({}, form, { autor: e.target.value })) }),
+          h('input', { placeholder: 'ISBN', value: form.isbn, onChange: e => setForm(Object.assign({}, form, { isbn: e.target.value })) })
+        ),
+        h('div', { className: 'row' },
+          h('input', { type: 'number', placeholder: 'Ano', value: form.ano, onChange: e => setForm(Object.assign({}, form, { ano: e.target.value })) }),
+          h('input', { placeholder: 'Categoria', value: form.categoria, onChange: e => setForm(Object.assign({}, form, { categoria: e.target.value })) }),
+          h('input', { type: 'number', min: 1, value: form.quantidade_total, onChange: e => setForm(Object.assign({}, form, { quantidade_total: e.target.value })) }),
+          h('button', { type: 'submit' }, 'Cadastrar')
+        ),
+        erro ? h('div', { className: 'erro' }, erro) : null,
+        ok ? h('div', { className: 'ok' }, ok) : null
+      )
+    ),
+    h('div', { className: 'card' },
+      h('div', { className: 'row' },
+        h('input', { placeholder: 'Buscar por título, autor ou ISBN...', value: busca, onChange: e => setBusca(e.target.value), style: { flex: 1 } }),
+        h('button', { onClick: carregar }, 'Buscar')
+      ),
+      h('table', null,
+        h('thead', null, h('tr', null,
+          h('th', null, 'ID'), h('th', null, 'Título'), h('th', null, 'Autor'),
+          h('th', null, 'ISBN'), h('th', null, 'Disp/Total'), h('th', null, '')
+        )),
+        h('tbody', null,
+          livros.map(l => h('tr', { key: l.id },
+            h('td', null, l.id),
+            h('td', null, l.titulo),
+            h('td', null, l.autor),
+            h('td', null, l.isbn || '—'),
+            h('td', null, l.disponiveis + '/' + l.total_exemplares),
+            h('td', null, h('button', { className: 'danger', onClick: () => excluir(l.id) }, 'Excluir'))
+          ))
+        )
+      )
+    )
+  );
+}
+
+/* ---------- Aba Usuários ---------- */
+function AbaUsuarios() {
+  const [usuarios, setUsuarios] = useState([]);
+  const [form, setForm] = useState({ nome: '', email: '', cpf: '', telefone: '' });
+  const [erro, setErro] = useState('');
+
+  const carregar = useCallback(async () => {
+    try { setUsuarios(await api.get('/usuarios')); }
+    catch (e) { setErro(e.message); }
+  }, []);
+
+  useEffect(() => { carregar(); }, [carregar]);
+
+  async function salvar(e) {
+    e.preventDefault();
+    setErro('');
+    try {
+      await api.post('/usuarios', form);
+      setForm({ nome: '', email: '', cpf: '', telefone: '' });
+      carregar();
+    } catch (err) { setErro(err.message); }
+  }
+
+  async function excluir(id) {
+    if (!confirm('Excluir usuário?')) return;
+    try { await api.del('/usuarios/' + id); carregar(); }
+    catch (err) { setErro(err.message); }
+  }
+
+  return h('div', null,
+    h('div', { className: 'card' },
+      h('h3', null, 'Novo Usuário'),
+      h('form', { onSubmit: salvar },
+        h('div', { className: 'row' },
+          h('input', { placeholder: 'Nome*', value: form.nome, required: true, onChange: e => setForm(Object.assign({}, form, { nome: e.target.value })) }),
+          h('input', { placeholder: 'Email*', value: form.email, required: true, onChange: e => setForm(Object.assign({}, form, { email: e.target.value })) })
+        ),
+        h('div', { className: 'row' },
+          h('input', { placeholder: 'CPF*', value: form.cpf, required: true, onChange: e => setForm(Object.assign({}, form, { cpf: e.target.value })) }),
+          h('input', { placeholder: 'Telefone', value: form.telefone, onChange: e => setForm(Object.assign({}, form, { telefone: e.target.value })) }),
+          h('button', { type: 'submit' }, 'Cadastrar')
+        ),
+        erro ? h('div', { className: 'erro' }, erro) : null
+      )
+    ),
+    h('div', { className: 'card' },
+      h('table', null,
+        h('thead', null, h('tr', null,
+          h('th', null, 'ID'), h('th', null, 'Nome'), h('th', null, 'Email'),
+          h('th', null, 'CPF'), h('th', null, 'Telefone'), h('th', null, '')
+        )),
+        h('tbody', null,
+          usuarios.map(u => h('tr', { key: u.id },
+            h('td', null, u.id),
+            h('td', null, u.nome),
+            h('td', null, u.email),
+            h('td', null, u.cpf),
+            h('td', null, u.telefone || '—'),
+            h('td', null, h('button', { className: 'danger', onClick: () => excluir(u.id) }, 'Excluir'))
+          ))
+        )
+      )
+    )
+  );
+}
+
+/* ---------- Aba Empréstimos ---------- */
+function AbaEmprestimos() {
+  const [emprestimos, setEmprestimos] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
+  const [livros, setLivros] = useState([]);
+  const [exemplares, setExemplares] = useState([]);
+  const [usuarioId, setUsuarioId] = useState('');
+  const [livroId, setLivroId] = useState('');
+  const [exemplarId, setExemplarId] = useState('');
+  const [erro, setErro] = useState('');
+  const [ok, setOk] = useState('');
+
+  const carregarBase = useCallback(async () => {
+    try {
+      const resultados = await Promise.all([
+        api.get('/emprestimos'),
+        api.get('/usuarios'),
+        api.get('/livros'),
+      ]);
+      setEmprestimos(resultados[0]);
+      setUsuarios(resultados[1]);
+      setLivros(resultados[2]);
+    } catch (e) { setErro(e.message); }
+  }, []);
+
+  useEffect(() => { carregarBase(); }, [carregarBase]);
+
+  useEffect(() => {
+    if (!livroId) { setExemplares([]); setExemplarId(''); return; }
+    api.get('/livros/' + livroId + '/exemplares')
+      .then(setExemplares)
+      .catch(() => {});
+    setExemplarId('');
+  }, [livroId]);
+
+  async function emprestar(e) {
+    e.preventDefault();
+    setErro(''); setOk('');
+    try {
+      await api.post('/emprestimos', {
+        usuario_id: Number(usuarioId),
+        exemplar_id: Number(exemplarId),
+      });
+      setOk('Empréstimo registrado!');
+      setUsuarioId(''); setLivroId(''); setExemplarId('');
+      carregarBase();
+    } catch (err) { setErro(err.message); }
+  }
+
+  async function devolver(id) {
+    if (!confirm('Registrar devolução?')) return;
+    try { await api.put('/emprestimos/' + id + '/devolucao', {}); carregar
