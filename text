@@ -1,7 +1,7 @@
 biblioteca/
 ├── package.json
 ├── .env
-├── schema.sql
-├── server.js          ← backend + frontend em um só arquivo
+├── server.js
 └── public/
-    └── index.html     ← frontend React (via CDN, sem build)
+    ├── index.html
+    └── app.js
